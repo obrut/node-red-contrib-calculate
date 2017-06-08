@@ -10,10 +10,10 @@ Run the following command in the root directory of your Node-RED install
     npm install node-red-contrib-calculate
 
 #Usage
-Add the calculate node, select either a time period or a number of messgaes for release. Select calculation. Done.
+Add the calculate node, select either a time period or a number of messages for release. Select calculation. Done.
 
 #Disclaimer
-Use at your own risk, of course, everything is going to be fine.
+Use at your own risk, of course, everything will be fine.
 
 #Author
 Gustaf Ridderstolpe, https://github.com/obrut
