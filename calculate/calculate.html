@@ -1,0 +1,124 @@
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<script type="text/x-red" data-template-name="calculate">
+
+    <div class="form-row">
+      <label for="node-input-pauseType"><i class="fa fa-tasks"></i> <span>Period type</span></label>
+      <select id="node-input-pauseType" style="width:270px !important">
+        <option value="rate">Message Count</option>
+        <option value="timed">Timed Release</option>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <label for="node-input-calculation"><i class="fa fa-tasks"></i> <span>Calculation</span></label>
+      <select id="node-input-calculation" style="width:270px !important">
+        <option value="average">Average</option>
+        <option value="median">Median</option>
+        <option value="min">Min value</option>
+        <option value="max">Max value</option>
+      </select>
+    </div>
+
+    <div id="timed-details" class="form-row">
+      <label for="node-input-timeout"><i class="fa fa-clock-o"></i> <span>Timed release</span></label>
+      <input type="text" id="node-input-timeout" placeholder="Time" style="text-align:end; width:50px !important">
+      <select id="node-input-timeoutUnits" style="width:200px !important">
+        <option value="milliseconds">Milliseconds</option>
+        <option value="seconds">Seconds</option>
+        <option value="minutes">Minutes</option>
+        <option value="hours">Hours</option>
+        <option value="days">Days</option>
+      </select>
+    </div>
+
+    <div id="rate-details" class="form-row">
+      <label for="node-input-rate"><i class="fa fa-clock-o"></i> <span></span>Message Count</label>
+      <input type="text" id="node-input-rate" placeholder="1" style="text-align:end; width:30px !important">
+      <label for="node-input-rateUnits"><span>Messages in topic</span></label>
+    </div>
+
+    <div class="form-row">
+      <label for="node-input-name"><i class="fa fa-tag"></i> <span>Nodename</span></label>
+      <input type="text" id="node-input-name" placeholder="Nodename">
+    </div>
+
+</script>
+
+<script type="text/x-red" data-help-name="calculate">
+    <p>Collects messages by <code>msg.topic</code> for a specified time or message count. Releases the last 
+    message received for each topic. 
+    The payload will be the calculated value of the <code>msg.payload</code> received during the 'tick'. 
+    Topics with non numerical values (in any of the received messages) will be discarded and an error message 
+    will be sent.</p>
+    <p>Messages without topic is added to a topic called _none_. Use the smooth-node for topic indifferent calculations.</p>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('calculate',{
+        category: 'function',
+        color:"#E6E0F8",
+        defaults: {
+            name: {value:""},
+            pauseType: {value:"timed", required:true},
+            calculation: {value:"average", required:true},
+            timeout: {value:"10", required:true, validate:RED.validators.number()},
+            timeoutUnits: {value:"seconds"},
+            rate: {value:"10", required:true, validate:RED.validators.number()}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "function.png",
+        label: function() {
+            return this.name||"calculation";
+        },
+        labelStyle: function() {
+            return this.name?"node_label_italic":"";
+        },
+        oneditprepare: function() {
+          var node = this;
+          $( "#node-input-timeout" ).spinner({min:1});
+          $( "#node-input-rate" ).spinner({min:1});
+          $( "#node-input-nbRateUnits" ).spinner({min:1});
+
+          $('.ui-spinner-button').click(function() {
+              $(this).siblings('input').change();
+          });
+          if (this.pauseType == "rate") {
+            $("#rate-details").show();
+            $("#timed-details").hide();
+          } else if (this.pauseType == "timed") {
+            $("#rate-details").hide();
+            $("#timed-details").show();
+          }
+
+          if (!this.timeoutUnits) {
+            $("#node-input-timeoutUnits option").filter(function() {
+              return $(this).val() == 'seconds';
+            }).attr('selected', true);
+          }
+
+          $("#node-input-pauseType").on("change",function() {
+            if (this.value == "rate") {
+              $("#rate-details").show();
+              $("#timed-details").hide();
+            } else if (this.value == "timed") {
+              $("#rate-details").hide();
+              $("#timed-details").show();
+            } 
+          });
+        }
+    });
+</script>

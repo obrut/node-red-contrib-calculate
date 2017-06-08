@@ -1,0 +1,15 @@
+{
+    "name"         : "node-red-contrib-calculate",
+    "version"      : "0.1.0",
+    "description"  : "A calculating node for node-red",
+    "dependencies": {
+    },
+    "keywords": [ "node-red", "calculating", "average", "max", "min", "median", "delay", "messagecount" ],
+    "node-red"     : {
+        "nodes": {
+            "calculate": "calculate/calculate.js"
+        }
+    },
+    "license": "Apache",
+    "author": "Gustaf Ridderstolpe"
+}
