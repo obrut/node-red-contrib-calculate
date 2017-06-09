@@ -45,12 +45,13 @@ module.exports = function(RED) {
             node.intervalID = setInterval(function() {
                 calculateAndRelease(node.buffer.slice(0));
                 node.buffer = [];
-                node.status( {fill: 'grey', shape: 'dot', text: node.buffer.length } );
+                node.status( { fill: 'grey', shape: 'dot', text: node.buffer.length } );
             },node.timeout);    
         }
 
         node.on("input", function(msg) {
             msg.topic = msg.topic || '_none_';
+            msg.pushedAt = new Date().getTime();
             var topic = node.buffer.find(b => typeof(b[0]) == 'object' && b.find(b2 => b2.topic == msg.topic));
             if (!topic)
                 node.buffer.push([msg]);
