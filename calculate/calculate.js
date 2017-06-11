@@ -87,9 +87,11 @@ module.exports = function(RED) {
                 let topic = topics.shift();
                 var err = topic.filter(m => isNaN(m.payload));
                 if (err.length == 0){
-                    var calculatedVal = getCalculation(topic);
-                    let result = topic.pop();
+                    let result = topic[topic.length-1];
+                    var calculatedVal = getCalculation(topic, topic[0].pushedAt, result.pushedAt);
                     result.payload = calculatedVal;
+                    result.points = topic.length;
+                    result.firstPushedAt = topic[0].pushedAt;
                     result.calculation = node.calculation;
                     node.send(result);
                 } else {
@@ -98,7 +100,7 @@ module.exports = function(RED) {
             }
         }
 
-        function getCalculation(messages){
+        function getCalculation(messages, firstAt, lastAt){
             var values = messages.map(p => (p.payload));
             switch (node.calculation) {
                 case 'average':
