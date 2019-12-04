@@ -53,25 +53,28 @@ module.exports = function(RED) {
             msg.topic = msg.topic || '_none_';
             msg.pushedAt = new Date().getTime();
             var topic = node.buffer.find(b => typeof(b[0]) == 'object' && b.find(b2 => b2.topic == msg.topic));
-            if (!topic)
+            var len = 0;
+            if (!topic) {
                 node.buffer.push([msg]);
-            else {
+                len = node.buffer.length;
+            } else {
                 topic.push(msg);
+                len = topic.length;
                 if (node.pauseType == 'rate' && topic.length >= node.rate){
                     calculateAndRelease(node.buffer.splice(node.buffer.findIndex(b => b === topic), 1));
                 }
             }
 
-            if (node.buffer.length == 0)
-                node.status( {fill: 'grey', shape: 'dot', text: node.buffer.length } ); 
-            else if (node.buffer.length < 10)
-            	node.status( {fill: 'green', shape: 'dot', text: node.buffer.length } );
-            else if (node.buffer.length < 50)
-            	node.status( {fill: 'blue', shape: 'dot', text: node.buffer.length } );
-            else if (node.buffer.length < 100)
-           		node.status( {fill: 'yellow', shape: 'dot', text: node.buffer.length } );
+            if (len == 0)
+                node.status( {fill: 'grey', shape: 'dot', text: len } );
+            else if (len < 10)
+                node.status( {fill: 'green', shape: 'dot', text: len } );
+            else if (len < 50)
+                node.status( {fill: 'blue', shape: 'dot', text: len } );
+            else if (len < 100)
+                node.status( {fill: 'yellow', shape: 'dot', text: len } );
             else {
-                node.status( {fill: 'red', shape: 'dot', text: node.buffer.length } );
+                node.status( {fill: 'red', shape: 'dot', text: len } );
                 node.warn(node.name + " " + RED._("Calculation buffer is really big."));
             }
         });
