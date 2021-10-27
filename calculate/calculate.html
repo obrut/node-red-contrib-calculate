@@ -51,6 +51,11 @@
     </div>
 
     <div class="form-row">
+      <label for="node-input-round"><i class="fa fa-tag"></i> <span>Round output</span></label>
+      <input type="checkbox" id="node-input-round">
+    </div>
+    
+    <div class="form-row">
       <label for="node-input-name"><i class="fa fa-tag"></i> <span>Nodename</span></label>
       <input type="text" id="node-input-name" placeholder="Nodename">
     </div>
@@ -60,7 +65,8 @@
 <script type="text/x-red" data-help-name="calculate">
     <p>Collects messages by <code>msg.topic</code> for a specified time or message count. Releases the last 
     message received for each topic. 
-    The payload will be the calculated value of the <code>msg.payload</code> received during the 'tick'. 
+    The payload will be the calculated value of the <code>msg.payload</code> received during the 'tick'.
+    The output can optionally be rounded.
     Topics with non numerical values (in any of the received messages) will be discarded and an error message 
     will be sent.</p>
     <p>Messages without topic is added to a topic called _none_. Use the smooth-node for topic indifferent calculations.</p>
@@ -76,7 +82,8 @@
             calculation: {value:"average", required:true},
             timeout: {value:"10", required:true, validate:RED.validators.number()},
             timeoutUnits: {value:"seconds"},
-            rate: {value:"10", required:true, validate:RED.validators.number()}
+            rate: {value:"10", required:true, validate:RED.validators.number()},
+            round: {value:false}
         },
         inputs:1,
         outputs:1,
