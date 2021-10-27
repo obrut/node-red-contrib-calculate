@@ -26,6 +26,7 @@ module.exports = function(RED) {
         this.intervalID = -1;
         this.pauseType = n.pauseType;
         this.rate = n.rate;
+        this.round = n.round;
 
         if (n.timeoutUnits === "milliseconds") {
             this.timeout = n.timeout;
@@ -92,6 +93,8 @@ module.exports = function(RED) {
                 if (err.length == 0){
                     let result = topic[topic.length-1];
                     var calculatedVal = getCalculation(topic, topic[0].pushedAt, result.pushedAt);
+                    if (node.round)
+                        calculatedVal = Math.round(calculatedVal);
                     result.payload = calculatedVal;
                     result.points = topic.length;
                     result.firstPushedAt = topic[0].pushedAt;
